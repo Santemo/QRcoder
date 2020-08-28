@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko" lang="ko">
+<head>
+	<title>Cross-Browser QRCode generator for Javascript</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+	<link href="styles.css" rel="stylesheet">
+	<script type="text/javascript" src="jquery.min.js"></script>
+	<script type="text/javascript" src="qrcode.js"></script>
+</head>
+<body>
+	<div class = "wrapper">
+		<div class = "name1">Значение кода/артикул</div>
+		<input id="text" type="text" value="код" style="width:80%" /><br />
+		<div class = "name1">Номер заказа/адрес хранения</div>
+		<input id="text1" type="text" style="width:80%" /><br />
+		<div class = "to_print">
+			<div id="qrcode"></div>
+			<div class = "data1"></div>
+			<div class = "data2"></div>
+		</div>
+		<input class = "gen" name="gen" type="button" value = "Генерировать">
+		<input class = "print" name="gen" type="button" value = "Печать">
+		<script type="text/javascript">
+		
+		var gen = $('.gen');
+		var print = $('.print');
+		
+	gen.on('click', function () {
+			
+			$("img").detach();
+			$("canvas").detach();
+			
+			var data1 = $('.data1');
+			data1.text($('#text').val());
+			
+			var data2 = $('.data2');
+			data2.text($('#text1').val());
+			
+	
+			var qrcode = new QRCode(document.getElementById("qrcode"), {
+				width : 80,
+				height : 80
+			});
+
+			function makeCode () {		
+				var elText = document.getElementById("text");
+				
+				if (!elText.value) {
+					alert("Input a text");
+					elText.focus();
+					return;
+				}
+				
+				qrcode.makeCode(elText.value);
+			}
+
+			makeCode();
+
+			$("#text").
+				on("blur", function () {
+					makeCode();
+				}).
+				on("keydown", function (e) {
+					if (e.keyCode == 13) {
+						makeCode();
+					}
+			});
+
+			
+		});
+		
+		
+		
+			$(function(){
+					print.click(function(){
+					
+					
+					var qrcode = $('#qrcode');
+					var data2 = $('.data2');
+					var data1 = $('.data1');
+					var img = $('img');
+					
+					qrcode.css({ "display": "inline"});
+					data1.css({ "padding-left": "82px", "word-break": "break-all", "width": "150px", "font-weight" : "bold"});
+					img.css({ "position": "absolute"});
+					data2.css({ "padding-top": "62px", "word-break": "break-all", "width": "250px", "font-weight" : "bold", "font-size" : "25px"});
+					
+					
+						var printing_css='<style media=print>tr:nth-child(even) td{background: #f0f0f0;}</style>';
+						var html_to_print=printing_css+$('.to_print').html();
+						var iframe=$('<iframe id="print_frame">');
+						$('body').append(iframe);
+						var doc = $('#print_frame')[0].contentDocument || $('#print_frame')[0].contentWindow.document;
+						var win = $('#print_frame')[0].contentWindow || $('#print_frame')[0];
+						doc.getElementsByTagName('body')[0].innerHTML=html_to_print;
+						win.print();
+						$('iframe').remove();	
+						
+						
+						data1.css({"width": "250px"});
+						data2.css({"width": "250px"});
+						
+					});
+					
+					
+				});
+			
+		
+		
+		</script>
+
+		
+		
+	</div>
+
+</body>
